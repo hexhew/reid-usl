@@ -71,6 +71,7 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # build the data loader
+    cfg.data.test['test_mode'] = True
     dataset = build_dataset(cfg.data.test)
     data_loader = build_dataloader(
         dataset,

@@ -40,7 +40,7 @@ def build_sampler(sampler_cfg,
                   batch_size,
                   shuffle=True,
                   dist=True,
-                  seed=0):
+                  seed=None):
     """Build sampler for data loader.
     """
     if sampler_cfg is not None:
@@ -49,7 +49,8 @@ def build_sampler(sampler_cfg,
             sampler_cfg['type'] = f'Distributed{sampler}'
         sampler_cfg['dataset'] = dataset
         sampler_cfg['batch_size'] = batch_size
-        sampler_cfg['seed'] = seed
+        if seed is not None:
+            sampler_cfg['seed'] = seed
 
         return build_from_cfg(sampler_cfg, SAMPLERS)
     else:

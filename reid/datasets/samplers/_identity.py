@@ -8,37 +8,21 @@ from mmcv.runner import get_dist_info
 from torch.utils.data import Sampler
 
 from ..builder import SAMPLERS
-from ._identity import (  # noqa
-    DistributedFixedStepsIdentitySampler, FixedStepsIdentitySampler,
-    IdentitySampler)
 
 
 @SAMPLERS.register_module()
-class FixedStepIdentitySampler(Sampler):
+class IdentitySampler(Sampler):
 
-    def __init__(self,
-                 dataset,
-                 batch_size,
-                 num_instances=4,
-                 step=400,
-                 seed=0,
-                 **kwargs):
+    def __init__(self, dataset, num_instances=4, **kwargs):
         self.dataset = dataset
-        self.batch_size = batch_size
         self.num_instances = num_instances
-        self.step = step
 
-        self.seed = seed
-        self.g = torch.Generator()
-        self.g.manual_seed(self.seed)
-
-        self.num_samples = self.batch_size * self.step
-        self.total_size = self.num_samples
+        self.init_data()
 
     def init_data(self):
-        self.index_pid = defaultdict(int)  # index -> pid
-        self.pid_cams = defaultdict(list)  # pid -> [camids]
-        self.pid_inds = defaultdict(list)  # pid -> [indexes]
+        self.index_pid = defaultdict(int)
+        self.pid_inds = defaultdict(list)
+        self.pid_cams = defaultdict(list)
 
         for index, (_, pid, camid) in enumerate(self.dataset.img_items):
             self.index_pid[index] = pid
@@ -46,22 +30,20 @@ class FixedStepIdentitySampler(Sampler):
             self.pid_inds[pid].append(index)
 
         self.pids = list(self.pid_inds.keys())
+        self.num_samples = len(self.pids)
+        self.total_size = self.num_samples
 
     def __len__(self):
-        return self.num_samples
+        return self.num_samples * self.num_instances
 
     def __iter__(self):
-        self.init_data()
+        yield from self._gen_iter_list()
 
-        indices = []
-        while len(indices) < self.num_samples:
-            _indices = torch.randperm(
-                len(self.pids), generator=self.g).tolist()
-            indices.extend(self._sample_list(_indices))
+    def _gen_iter_list(self):
+        indices = torch.randperm(len(self.pids)).tolist()
+        indices += indices[:self.total_size - len(indices)]
 
-        indices = indices[:self.num_samples]
-        assert len(indices) == self.num_samples
-        return iter(indices)
+        yield from self._sample_list(indices)
 
     def _sample_list(self, indices):
         ret = []
@@ -109,17 +91,60 @@ class FixedStepIdentitySampler(Sampler):
 
 
 @SAMPLERS.register_module()
-class DistributedFixedStepIdentitySampler(FixedStepIdentitySampler):
+class FixedStepsIdentitySampler(IdentitySampler):
 
     def __init__(self,
                  dataset,
                  batch_size,
                  num_instances=4,
-                 step=400,
-                 seed=0,
+                 steps=400,
+                 seed=0):
+        self.dataset = dataset
+        self.batch_size = batch_size
+        self.num_instances = num_instances
+        self.steps = steps
+
+        self.num_samples = self.steps * self.batch_size
+        self.total_size = self.num_samples
+
+    def init_data(self):
+        self.index_pid = defaultdict(int)
+        self.pid_inds = defaultdict(list)
+        self.pid_cams = defaultdict(list)
+
+        for index, (_, pid, camid) in enumerate(self.dataset.img_items):
+            self.index_pid[index] = pid
+            self.pid_cams[pid].append(camid)
+            self.pid_inds[pid].append(index)
+
+        self.pids = list(self.pid_inds.keys())
+
+        indices = []
+        while len(indices) < self.num_samples:
+            _inds = torch.randperm(len(self.pids)).tolist()
+            indices.extend(self._sample_list(_inds))
+
+        self.indices = indices[:self.num_samples]
+
+    def __len__(self):
+        return self.num_samples
+
+    def __iter__(self):
+        self.init_data()
+        return iter(self.indices)
+
+
+@SAMPLERS.register_module()
+class DistributedFixedStepsIdentitySampler(FixedStepsIdentitySampler):
+
+    def __init__(self,
+                 dataset,
+                 batch_size,
+                 num_instances=4,
+                 steps=400,
                  num_replicas=None,
                  rank=None,
-                 **kwargs):
+                 seed=0):
         _rank, _world_size = get_dist_info()
         if num_replicas is None:
             num_replicas = _world_size
@@ -127,32 +152,17 @@ class DistributedFixedStepIdentitySampler(FixedStepIdentitySampler):
             rank = _rank
         self.num_replicas = num_replicas
         self.rank = rank
-        # batch_size of single process -> total batch size
-        batch_size = batch_size * self.num_replicas
-        super().__init__(dataset, batch_size, num_instances, step)
+        super().__init__(dataset, batch_size, num_instances, steps)
 
-        num_samples = self.batch_size * self.step
-        self.num_samples = int(math.ceil(num_samples / self.num_replicas))
+        self.num_samples = int(
+            math.ceil(self.batch_size * self.steps / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas
 
         self.seed = seed
-        self.epoch = 0
 
     def __iter__(self):
         self.init_data()
-
-        g = torch.Generator()
-        g.manual_seed(self.seed + self.epoch)
-
-        indices = []
-        while len(indices) < self.total_size:
-            _indices = torch.randperm(
-                len(self.pids), generator=self.g).tolist()
-            indices.extend(self._sample_list(_indices))
-
-        indices = indices[:self.total_size]
-        # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
+        indices = self.indices[self.rank:self.total_size:self.num_replicas]
         assert len(indices) == self.num_samples
 
         return iter(indices)

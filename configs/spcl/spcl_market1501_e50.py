@@ -14,6 +14,7 @@ model = dict(
         type='BNNeck',
         feat_dim=2048,
         norm_cfg=dict(type='BN1d'),
+        with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
     head=dict(
@@ -46,9 +47,9 @@ test_pipeline = [
         std=[0.229, 0.224, 0.225])
 ]
 data = dict(
-    samples_per_gpu=64,
+    samples_per_gpu=32,  # 32 x 2 = 64
     workers_per_gpu=4,
-    sampler=dict(type='FixedStepsIdentitySampler', num_instances=4, steps=400),
+    sampler=dict(type='FixedStepIdentitySampler', num_instances=4, steps=400),
     train=dict(
         type=dataset_type, data_source=data_source, pipeline=train_pipeline),
     test=dict(

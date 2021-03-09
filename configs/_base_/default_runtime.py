@@ -1,7 +1,7 @@
 evaluation = dict(
     interval=5,
     evaluator=dict(
-        metric='cosine',
+        metric='euclidean',
         feat_norm=True,
         max_rank=50,
         topk=(1, 5, 10),

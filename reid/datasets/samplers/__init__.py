@@ -1,7 +1,10 @@
 from .identity import (DistributedFixedStepsIdentitySampler,
-                       FixedStepsIdentitySampler, IdentitySampler)
+                       DistributedFixedStepIdentitySampler,
+                       FixedStepsIdentitySampler, FixedStepIdentitySampler,
+                       IdentitySampler)
 
 __all__ = [
-    'DistributedFixedStepsIdentitySampler', 'IdentitySampler',
-    'FixedStepsIdentitySampler'
+    'DistributedFixedStepsIdentitySampler',
+    'DistributedFixedStepIdentitySampler', 'IdentitySampler',
+    'FixedStepsIdentitySampler', 'FixedStepIdentitySampler'
 ]

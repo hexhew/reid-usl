@@ -1,5 +1,5 @@
-from .reid_dataset import ReIDDataset
 from .builder import DATASETS
+from .reid_dataset import ReIDDataset
 
 
 @DATASETS.register_module()

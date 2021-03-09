@@ -1,3 +1,3 @@
-from .identity import IdentitySampler, FixedStepsIdentitySampler
+from .identity import FixedStepsIdentitySampler, IdentitySampler
 
 __all__ = ['IdentitySampler', 'FixedStepsIdentitySampler']

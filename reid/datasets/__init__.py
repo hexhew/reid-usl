@@ -1,12 +1,12 @@
-from .builder import (DATASETS, DATA_SOURCES, SAMPLERS, build_dataset,
-                      build_data_source, build_dataloader, build_sampler,
-                      build_pipeline)
-from .reid_dataset import ReIDDataset
-from .data_sources import *  # noqa
+from .builder import (DATA_SOURCES, DATASETS, SAMPLERS, build_data_source,
+                      build_dataloader, build_dataset, build_pipeline,
+                      build_sampler)
 from .contrastive import ContrastiveDataset
-from .samplers import *  # noqa
+from .data_sources import *  # noqa
 from .pipelines import *  # noqa
 from .pseudo_label import PseudoLabelDataset
+from .reid_dataset import ReIDDataset
+from .samplers import *  # noqa
 
 __all__ = [
     'DATASETS', 'DATA_SOURCES', 'build_dataset', 'build_data_source',

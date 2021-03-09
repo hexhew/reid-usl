@@ -1,10 +1,10 @@
+import numpy as np
 import torch
 import torch.distributed as dist
-import numpy as np
 from mmcv.runner import HOOKS, Hook
 
-from .extractor import Extractor
 from ..label import build_label_generator
+from .extractor import Extractor
 
 
 @HOOKS.register_module()

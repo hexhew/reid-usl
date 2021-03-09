@@ -4,9 +4,9 @@ from mmcv.runner import get_dist_info
 from mmcv.utils import print_log
 from tabulate import tabulate
 
-from .rank import evaluate_rank
-from .extract import multi_gpu_extract, single_gpu_extract
 from ..distances import cosine_distance, euclidean_distance
+from .extract import multi_gpu_extract, single_gpu_extract
+from .rank import evaluate_rank
 
 
 class Evaluator:
@@ -80,6 +80,8 @@ class Evaluator:
         _results['mAP'] = mAP
         for k in self.topk:
             _results[f'Rank-{k}'] = cmc[k - 1]
+
+        self.report(_results, logger=logger)
 
     def report(self, results, logger=None):
         headers = ['dataset']

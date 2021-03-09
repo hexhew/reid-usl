@@ -1,8 +1,8 @@
-import torch
-import torch.nn.functional as F
 import faiss
 import faiss.contrib.torch_utils
 import numpy as np
+import torch
+import torch.nn.functional as F
 
 
 @torch.no_grad()

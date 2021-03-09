@@ -2,10 +2,11 @@
 
 import cython
 import numpy as np
-cimport numpy as np
-from collections import defaultdict
-import random
 
+cimport numpy as np
+
+import random
+from collections import defaultdict
 
 """
 Compiler directives:

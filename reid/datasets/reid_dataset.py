@@ -1,6 +1,6 @@
-from torch.utils.data import Dataset
 from mmcv.runner import get_dist_info
 from PIL import Image
+from torch.utils.data import Dataset
 
 from .builder import DATASETS, build_data_source, build_pipeline
 

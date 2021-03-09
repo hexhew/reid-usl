@@ -1,0 +1,7 @@
+numpy
+mmcv
+torch
+torchvision
+tabulate
+faiss-gpu
+scikit-learn

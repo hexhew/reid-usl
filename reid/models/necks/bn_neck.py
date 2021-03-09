@@ -11,6 +11,7 @@ class BNNeck(nn.Module):
     def __init__(self,
                  feat_dim=2048,
                  norm_cfg=dict(type='BN1d'),
+                 with_bias=False,
                  with_avg_pool=True,
                  avgpool=dict(type='AvgPoolNeck')):
         super(BNNeck, self).__init__()
@@ -23,6 +24,10 @@ class BNNeck(nn.Module):
         self.feat_dim = feat_dim
         self.norm_cfg = norm_cfg
         _, self.bn = build_norm_layer(norm_cfg, feat_dim)
+
+        self.with_bias = with_bias
+        if not self.with_bias:
+            self.bn.bias.requires_grad = False
 
     def init_weights(self, **kwargs):
         nn.init.constant_(self.bn.weight, 1.)

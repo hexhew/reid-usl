@@ -35,7 +35,12 @@ def build_dataset(cfg):
     return build_from_cfg(cfg, DATASETS)
 
 
-def build_sampler(sampler_cfg, dataset, batch_size, shuffle=True, dist=True):
+def build_sampler(sampler_cfg,
+                  dataset,
+                  batch_size,
+                  shuffle=True,
+                  dist=True,
+                  seed=0):
     """Build sampler for data loader.
     """
     if sampler_cfg is not None:
@@ -44,11 +49,12 @@ def build_sampler(sampler_cfg, dataset, batch_size, shuffle=True, dist=True):
             sampler_cfg['type'] = f'Distributed{sampler}'
         sampler_cfg['dataset'] = dataset
         sampler_cfg['batch_size'] = batch_size
+        sampler_cfg['seed'] = seed
 
         return build_from_cfg(sampler_cfg, SAMPLERS)
     else:
         if dist:
-            sampler = DistributedSampler(dataset, shuffle=shuffle)
+            sampler = DistributedSampler(dataset, shuffle=shuffle, seed=seed)
         else:
             sampler = RandomSampler(dataset) if shuffle else None
 
@@ -73,7 +79,7 @@ def build_dataloader(dataset,
         num_workers = num_gpus * workers_per_gpu
 
     sampler = build_sampler(
-        sampler, dataset, batch_size, shuffle=shuffle, dist=dist)
+        sampler, dataset, batch_size, shuffle=shuffle, dist=dist, seed=seed)
 
     init_fn = partial(
         worker_init_fn, num_workers=num_workers, rank=rank,

@@ -1,3 +1,7 @@
-from .identity import FixedStepsIdentitySampler, IdentitySampler
+from .identity import (DistributedFixedStepsIdentitySampler,
+                       FixedStepsIdentitySampler, IdentitySampler)
 
-__all__ = ['IdentitySampler', 'FixedStepsIdentitySampler']
+__all__ = [
+    'DistributedFixedStepsIdentitySampler', 'IdentitySampler',
+    'FixedStepsIdentitySampler'
+]

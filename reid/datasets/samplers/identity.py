@@ -1,9 +1,11 @@
 import random
 from collections import defaultdict
+import math
 
 import numpy as np
 import torch
 from torch.utils.data import Sampler
+from mmcv.runner import get_dist_info
 
 from ..builder import SAMPLERS
 
@@ -91,7 +93,12 @@ class IdentitySampler(Sampler):
 @SAMPLERS.register_module()
 class FixedStepsIdentitySampler(IdentitySampler):
 
-    def __init__(self, dataset, batch_size, num_instances=4, steps=400):
+    def __init__(self,
+                 dataset,
+                 batch_size,
+                 num_instances=4,
+                 steps=400,
+                 seed=0):
         self.dataset = dataset
         self.batch_size = batch_size
         self.num_instances = num_instances
@@ -125,6 +132,43 @@ class FixedStepsIdentitySampler(IdentitySampler):
     def __iter__(self):
         self.init_data()
         return iter(self.indices)
+
+
+@SAMPLERS.register_module()
+class DistributedFixedStepsIdentitySampler(FixedStepsIdentitySampler):
+
+    def __init__(self,
+                 dataset,
+                 batch_size,
+                 num_instances=4,
+                 steps=400,
+                 num_replicas=None,
+                 rank=None,
+                 seed=0):
+        _rank, _world_size = get_dist_info()
+        if num_replicas is None:
+            num_replicas = _world_size
+        if rank is None:
+            rank = _rank
+        self.num_replicas = num_replicas
+        self.rank = rank
+        super().__init__(dataset, batch_size, num_instances, steps)
+
+        self.num_samples = int(
+            math.ceil(self.batch_size * self.steps / self.num_replicas))
+        self.total_size = self.num_samples * self.num_replicas
+
+        self.seed = seed
+
+    def __iter__(self):
+        self.init_data()
+        indices = self.indices[self.rank:self.total_size:self.num_replicas]
+        assert len(indices) == self.num_samples
+
+        return iter(indices)
+
+    def set_epoch(self, epoch):
+        self.epoch = epoch
 
 
 def No_index(a, b):

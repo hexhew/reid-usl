@@ -138,6 +138,7 @@ dmypy.json
 cython_debug/
 
 # project
+.dist/
 .vscode/
 reid/core/evaluation/rank_cylib/rank_cy.c
 tests/

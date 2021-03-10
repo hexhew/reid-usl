@@ -40,7 +40,7 @@ def build_sampler(sampler_cfg,
                   batch_size,
                   shuffle=True,
                   dist=True,
-                  seed=None):
+                  seed=1):
     """Build sampler for data loader.
     """
     if sampler_cfg is not None:
@@ -49,8 +49,7 @@ def build_sampler(sampler_cfg,
             sampler_cfg['type'] = f'Distributed{sampler}'
         sampler_cfg['dataset'] = dataset
         sampler_cfg['batch_size'] = batch_size
-        if seed is not None:
-            sampler_cfg['seed'] = seed
+        sampler_cfg['seed'] = seed
 
         return build_from_cfg(sampler_cfg, SAMPLERS)
     else:
@@ -69,7 +68,7 @@ def build_dataloader(dataset,
                      dist=True,
                      shuffle=True,
                      sampler=None,
-                     seed=None,
+                     seed=1,
                      **kwargs):
     rank, world_size = get_dist_info()
     if dist:
@@ -83,8 +82,7 @@ def build_dataloader(dataset,
         sampler, dataset, batch_size, shuffle=shuffle, dist=dist, seed=seed)
 
     init_fn = partial(
-        worker_init_fn, num_workers=num_workers, rank=rank,
-        seed=seed) if seed is not None else None
+        worker_init_fn, num_workers=num_workers, rank=rank, seed=seed)
 
     data_loader = DataLoader(
         dataset,

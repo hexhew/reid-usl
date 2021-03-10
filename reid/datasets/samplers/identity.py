@@ -8,7 +8,7 @@ from mmcv.runner import get_dist_info
 from torch.utils.data import Sampler
 
 from ..builder import SAMPLERS
-from ._identity import (  # noqa
+from ._identity_deprecated import (  # noqa
     DistributedFixedStepsIdentitySampler, FixedStepsIdentitySampler,
     IdentitySampler)
 

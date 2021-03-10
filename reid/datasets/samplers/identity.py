@@ -144,16 +144,20 @@ class DistributedFixedStepIdentitySampler(FixedStepIdentitySampler):
         g = torch.Generator()
         g.manual_seed(self.seed + self.epoch)
 
+        num_ids = len(self.pids)
+        num_ids_per_proc = int(math.ceil(num_ids / self.num_replicas))
+        num_ids = num_ids_per_proc * self.num_replicas
+
         indices = []
         while len(indices) < self.total_size:
             _indices = torch.randperm(
                 len(self.pids), generator=self.g).tolist()
-            indices.extend(self._sample_list(_indices))
-
-        indices = indices[:self.total_size]
-        # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
-        assert len(indices) == self.num_samples
+            _indices += _indices[:num_ids - len(self.pids)]
+            # subsample
+            indices.extend(
+                self._sample_list(
+                    _indices[self.rank:num_ids:self.num_replicas]))
+        indices = indices[:self.num_samples]
 
         return iter(indices)
 

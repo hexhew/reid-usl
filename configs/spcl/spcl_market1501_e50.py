@@ -69,7 +69,11 @@ custom_hooks = [
             samples_per_gpu=32,
             workers_per_gpu=4),
         label_generator=dict(
-            type='SelfPacedGenerator', eps=[0.58, 0.6, 0.62], min_samples=4))
+            type='SelfPacedGenerator',
+            eps=[0.58, 0.6, 0.62],
+            min_samples=4,
+            k1=30,
+            k2=6))
 ]
 optimizer = dict(type='Adam', lr=0.00035, weight_decay=5e-4)
 lr_config = dict(policy='step', step=[20, 40])

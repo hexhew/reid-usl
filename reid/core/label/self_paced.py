@@ -11,11 +11,13 @@ from .builder import LABEL_GENERATORS
 @LABEL_GENERATORS.register_module()
 class SelfPacedGenerator(object):
 
-    def __init__(self, eps, min_samples=4, use_outliers=True):
+    def __init__(self, eps, min_samples=4, use_outliers=True, k1=30, k2=6):
         assert isinstance(eps, (tuple, list))
         self.eps = sorted(list(eps))
         self.min_samples = min_samples
         self.use_outliers = use_outliers
+        self.k1 = k1
+        self.k2 = k2
 
     @torch.no_grad()
     def dbscan_single(self, features, dist, eps):
@@ -138,7 +140,7 @@ class SelfPacedGenerator(object):
 
     @torch.no_grad()
     def gen_labels(self, features):
-        dist = jaccard_distance(features)
+        dist = jaccard_distance(features, k1=self.k1, k2=self.k2)
 
         if len(self.eps) == 1:
             # normal clustering

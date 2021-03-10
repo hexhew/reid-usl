@@ -27,10 +27,18 @@ model = dict(
 data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
 dataset_type = 'ReIDDataset'
 train_pipeline = [
-    dict(type='Resize', size=(256, 128), interpolation=3),
+    # dict(type='Resize', size=(256, 128), interpolation=3),
+    dict(type='RandomSizedRectCrop', size=(256, 128), interpolation=3),
     dict(type='RandomHorizontalFlip'),
-    dict(type='Pad', padding=10),
-    dict(type='RandomCrop', size=(256, 128)),
+    # dict(type='Pad', padding=10),
+    # dict(type='RandomCrop', size=(256, 128)),
+    dict(type='RandomRotation', degrees=10),
+    dict(
+        type='ColorJitter',
+        brightness=0.2,
+        contrast=0.2,
+        saturation=0.2,
+        hue=0),
     dict(type='ToTensor'),
     dict(
         type='Normalize',

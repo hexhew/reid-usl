@@ -1,11 +1,11 @@
 import inspect
-import random
 import math
+import random
 
 import numpy as np
 import torchvision.transforms as T
-from PIL import Image, ImageFilter
 from mmcv.utils import build_from_cfg
+from PIL import Image, ImageFilter
 
 from ..builder import PIPELINES
 

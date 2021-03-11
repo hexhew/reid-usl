@@ -1,5 +1,5 @@
 import torch.nn as nn
-from mmcv.cnn import kaiming_init, normal_init, is_norm
+from mmcv.cnn import is_norm, kaiming_init, normal_init
 
 from ..builder import NECKS, build_neck
 

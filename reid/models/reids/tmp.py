@@ -1,8 +1,8 @@
 import torch
 import torch.nn.functional as F
 
-from ..utils import GatherLayer
 from ..builder import REIDS
+from ..utils import GatherLayer
 from .baseline import Baseline
 
 

@@ -49,7 +49,11 @@ test_pipeline = [
 data = dict(
     samples_per_gpu=32,  # 32 x 2 = 64
     workers_per_gpu=4,
-    sampler=dict(type='FixedStepIdentitySampler', num_instances=4, steps=400),
+    sampler=dict(
+        type='FixedStepIdentitySampler',
+        num_instances=4,
+        step=400,
+        with_camid=True),
     train=dict(
         type=dataset_type, data_source=data_source, pipeline=train_pipeline),
     test=dict(

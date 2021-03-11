@@ -21,12 +21,14 @@ class FixedStepIdentitySampler(Sampler):
                  batch_size,
                  num_instances=4,
                  step=400,
+                 with_camid=True,
                  seed=0,
                  **kwargs):
         self.dataset = dataset
         self.batch_size = batch_size
         self.num_instances = num_instances
         self.step = step
+        self.with_camid = with_camid
 
         self.seed = seed
         self.g = torch.Generator()
@@ -116,6 +118,7 @@ class DistributedFixedStepIdentitySampler(FixedStepIdentitySampler):
                  batch_size,
                  num_instances=4,
                  step=400,
+                 with_camid=True,
                  seed=0,
                  num_replicas=None,
                  rank=None,
@@ -129,7 +132,7 @@ class DistributedFixedStepIdentitySampler(FixedStepIdentitySampler):
         self.rank = rank
         # batch_size of single process -> total batch size
         batch_size = batch_size * self.num_replicas
-        super().__init__(dataset, batch_size, num_instances, step)
+        super().__init__(dataset, batch_size, num_instances, step, with_camid)
 
         num_samples = self.batch_size * self.step
         self.num_samples = int(math.ceil(num_samples / self.num_replicas))

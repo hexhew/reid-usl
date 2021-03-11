@@ -27,7 +27,12 @@ model = dict(
 data_source = dict(type='DukeMTMC', data_root='/data/datasets/duke')
 dataset_type = 'ReIDDataset'
 train_pipeline = [
-    dict(type='RandomSizedRectCrop', size=(256, 128), interpolation=3),
+    dict(
+        type='RandomResizedCrop',
+        size=(256, 128),
+        scale=(0.64, 1.0),
+        ratio=(0.33, 0.5),
+        interpolation=3),
     dict(type='RandomHorizontalFlip'),
     dict(type='RandomRotation', degrees=10),
     dict(

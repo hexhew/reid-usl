@@ -87,17 +87,29 @@ custom_hooks = [
             workers_per_gpu=4),
         label_generator=dict(
             type='SelfPacedGenerator',
-            eps=[0.58, 0.6, 0.62],
+            # eps=[0.58, 0.6, 0.62],
+            eps=[0.75],
             min_samples=4,
             k1=20,
             k2=6))
 ]
-paramwise_cfg = {'backbone': dict(lr_mult=0.1)}
+# optimizer
+paramwise_cfg = {
+    r'(bn|gn)(\d+)?.(weight|bias)': dict(weight_decay=0., lars_exclude=True),
+    r'bias': dict(weight_decay=0., lars_exclude=True)
+}
 optimizer = dict(
-    type='SGD',
-    lr=0.1,
-    weight_decay=5e-4,
+    type='LARS',
+    lr=0.3,
+    weight_decay=0.0000015,
     momentum=0.9,
     paramwise_cfg=paramwise_cfg)
-lr_config = dict(policy='step', step=[40])
+# learning policy
+lr_config = dict(
+    policy='CosineAnnealing',
+    min_lr=0.,
+    warmup='linear',
+    warmup_iters=2,
+    warmup_ratio=0.0001,  # cannot be 0
+    warmup_by_epoch=True)
 total_epochs = 60

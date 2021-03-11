@@ -1,8 +1,13 @@
 _base_ = '../_base_/default_runtime.py'
 
 model = dict(
-    type='SimSiam',
+    type='MMCL',
     pretrained='torchvision://resnet50',
+    feat_dim=2048,
+    memory_size=32621,
+    base_momentum=0.5,
+    start_epoch=6,
+    label_generator=dict(type='MPLP', t=0.6),
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -17,21 +22,25 @@ model = dict(
         with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
-    head=dict(
-        type='LatentPredictHead',
-        predictor=dict(
-            type='NonLinearPredictor',
-            in_channels=2048,
-            hid_channels=4096,
-            out_channels=2048)))
+    head=dict(type='MMCLHead', delta=5.0, r=0.01))
 
-data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
-dataset_type = 'ContrastiveDataset'
+data_source = dict(type='MSMT17', data_root='/data/datasets/msmt17')
+dataset_type = 'ReIDDataset'
 train_pipeline = [
-    dict(type='Resize', size=(256, 128), interpolation=3),
+    dict(
+        type='RandomResizedCrop',
+        size=(256, 128),
+        scale=(0.64, 1.0),
+        ratio=(0.33, 0.5),
+        interpolation=3),
     dict(type='RandomHorizontalFlip'),
-    dict(type='Pad', padding=10),
-    dict(type='RandomCrop', size=(256, 128)),
+    dict(type='RandomRotation', degrees=10),
+    dict(
+        type='ColorJitter',
+        brightness=0.2,
+        contrast=0.2,
+        saturation=0.2,
+        hue=0),
     dict(type='ToTensor'),
     dict(
         type='Normalize',
@@ -48,7 +57,7 @@ test_pipeline = [
         std=[0.229, 0.224, 0.225])
 ]
 data = dict(
-    samples_per_gpu=64,  # 64 x 8 = 512
+    samples_per_gpu=32,  # 32 x 4 = 128
     workers_per_gpu=4,
     train=dict(
         type=dataset_type, data_source=data_source, pipeline=train_pipeline),
@@ -58,6 +67,13 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
+custom_hooks = [dict(type='MMCLHook')]
+paramwise_cfg = {'backbone': dict(lr_mult=0.1)}
+optimizer = dict(
+    type='SGD',
+    lr=0.1,
+    weight_decay=5e-4,
+    momentum=0.9,
+    paramwise_cfg=paramwise_cfg)
+lr_config = dict(policy='step', step=[40])
+total_epochs = 60

@@ -8,6 +8,12 @@ from .reid_data_source import ReIDDataSource
 
 @DATA_SOURCES.register_module()
 class Market1501(ReIDDataSource):
+    """Market-1501.
+
+    Dataset statistics:
+        - identities: 1501 (+1 for background).
+        - images: 12936 (train) + 3368 (query) + 15913 (gallery).
+    """
     DATA_SOURCE = 'Market1501'
 
     def __init__(self, data_root):

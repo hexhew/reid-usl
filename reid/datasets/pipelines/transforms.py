@@ -8,7 +8,7 @@ from PIL import ImageFilter
 
 from ..builder import PIPELINES
 
-_excluded_transforms = ['RandomErasing', 'RandomApply']
+_excluded_transforms = ['RandomApply']
 for m in inspect.getmembers(T, inspect.isclass):
     if m[0] not in _excluded_transforms:
         PIPELINES.register_module(name=m[0], module=m[1])

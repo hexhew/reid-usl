@@ -64,7 +64,7 @@ train_pipeline = [
         type='Normalize',
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]),
-    dict(type='RandomErasing')
+    dict(type='RandomErasing', value=[0.485, 0.456, 0.406])
 ]
 test_pipeline = [
     dict(type='Resize', size=(256, 128), interpolation=3),

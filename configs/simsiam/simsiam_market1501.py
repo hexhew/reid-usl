@@ -10,21 +10,21 @@ model = dict(
         strides=(1, 2, 2, 1),
         norm_cfg=dict(type='BN'),
         norm_eval=False),
-    # neck=dict(
-    #     type='BNNeck',
-    #     feat_dim=2048,
-    #     norm_cfg=dict(type='BN1d'),
-    #     with_bias=False,
-    #     with_avg_pool=True,
-    #     avgpool=dict(type='AvgPoolNeck')),
     neck=dict(
-        type='Projection',
-        in_channels=2048,
-        hid_channels=2048,
-        out_channels=2048,
-        num_layers=3,
+        type='BNNeck',
+        feat_dim=2048,
+        norm_cfg=dict(type='BN1d'),
+        with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
+    # neck=dict(
+    #     type='Projection',
+    #     in_channels=2048,
+    #     hid_channels=2048,
+    #     out_channels=2048,
+    #     num_layers=3,
+    #     with_avg_pool=True,
+    #     avgpool=dict(type='AvgPoolNeck')),
     head=dict(
         type='LatentPredictHead',
         predictor=dict(

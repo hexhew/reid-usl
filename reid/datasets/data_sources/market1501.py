@@ -15,6 +15,7 @@ class Market1501(ReIDDataSource):
         - images: 12936 (train) + 3368 (query) + 15913 (gallery).
     """
     DATA_SOURCE = 'Market1501'
+    NUM_CAMERAS = 6
 
     def __init__(self, data_root):
         self.data_root = data_root

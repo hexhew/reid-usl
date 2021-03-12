@@ -3,7 +3,7 @@ import random
 
 from PIL import Image
 
-from ..builder import PIPELINES
+from .builder import PIPELINES
 
 
 class RectScale(object):

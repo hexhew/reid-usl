@@ -28,6 +28,11 @@ data_source = dict(type='DukeMTMC', data_root='/data/datasets/duke')
 dataset_type = 'ReIDDataset'
 train_pipeline = [
     dict(
+        type='RandomCamStyle',
+        camstyle_root='bounding_box_train_camstyle',
+        p=0.5),
+    dict(type='LoadImage'),
+    dict(
         type='RandomResizedCrop',
         size=(256, 128),
         scale=(0.64, 1.0),

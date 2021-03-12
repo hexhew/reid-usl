@@ -6,7 +6,6 @@ import numpy as np
 from mmcv.runner import get_dist_info
 from mmcv.utils import Registry, build_from_cfg
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
-from torchvision.transforms import Compose
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -18,13 +17,7 @@ if platform.system() != 'Windows':
 
 DATA_SOURCES = Registry('data source')
 DATASETS = Registry('dataset')
-PIPELINES = Registry('pipeline')
 SAMPLERS = Registry('sampler')
-
-
-def build_pipeline(pipeline):
-    pipeline = [build_from_cfg(_pipe, PIPELINES) for _pipe in pipeline]
-    return Compose(pipeline)
 
 
 def build_data_source(cfg):

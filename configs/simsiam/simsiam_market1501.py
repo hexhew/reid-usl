@@ -22,16 +22,35 @@ model = dict(
         predictor=dict(
             type='NonLinearPredictor',
             in_channels=2048,
-            hid_channels=4096,
+            hid_channels=512,
             out_channels=2048)))
 
 data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
 dataset_type = 'ContrastiveDataset'
 train_pipeline = [
-    dict(type='Resize', size=(256, 128), interpolation=3),
+    dict(
+        type='RandomResizedCrop',
+        size=(256, 128),
+        scale=(0.64, 1.0),
+        ratio=(0.33, 0.5),
+        interpolation=3),
     dict(type='RandomHorizontalFlip'),
-    dict(type='Pad', padding=10),
-    dict(type='RandomCrop', size=(256, 128)),
+    dict(type='RandomRotation', degrees=10),
+    dict(
+        type='RandomApply',
+        transforms=[
+            dict(
+                type='ColorJitter',
+                brightness=0.4,
+                contrast=0.4,
+                saturation=0.4,
+                hue=0.1)
+        ],
+        p=0.8),
+    dict(
+        type='RandomApply',
+        transforms=[dict(type='GaussianBlur', sigma=(0.1, 2.0))],
+        p=0.5),
     dict(type='ToTensor'),
     dict(
         type='Normalize',
@@ -59,5 +78,5 @@ data = dict(
         test_mode=True))
 
 optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
+lr_config = dict(policy='step', step=[40])
+total_epochs = 60

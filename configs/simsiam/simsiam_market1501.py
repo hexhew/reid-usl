@@ -10,11 +10,19 @@ model = dict(
         strides=(1, 2, 2, 1),
         norm_cfg=dict(type='BN'),
         norm_eval=False),
+    # neck=dict(
+    #     type='BNNeck',
+    #     feat_dim=2048,
+    #     norm_cfg=dict(type='BN1d'),
+    #     with_bias=False,
+    #     with_avg_pool=True,
+    #     avgpool=dict(type='AvgPoolNeck')),
     neck=dict(
-        type='BNNeck',
-        feat_dim=2048,
-        norm_cfg=dict(type='BN1d'),
-        with_bias=False,
+        type='Projection',
+        in_channels=2048,
+        hid_channels=2048,
+        out_channels=2048,
+        num_layers=3,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
     head=dict(
@@ -79,4 +87,5 @@ data = dict(
 
 optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
 lr_config = dict(policy='step', step=[40])
+log_config = dict(interval=10)
 total_epochs = 60

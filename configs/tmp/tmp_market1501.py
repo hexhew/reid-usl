@@ -27,6 +27,10 @@ data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
 dataset_type = 'ContrastiveDataset'
 train_pipeline = [
     dict(
+        type='RandomCamStyle',
+        camstyle_root='bounding_box_train_camstyle',
+        p=0.5),
+    dict(
         type='RandomResizedCrop',
         size=(256, 128),
         scale=(0.64, 1.0),

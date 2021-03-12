@@ -75,6 +75,23 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-optimizer = dict(type='SGD', lr=0.01, weight_decay=5e-4, momentum=0.9)
-lr_config = dict(policy='step', step=[40])
+# optimizer
+paramwise_cfg = {
+    r'(bn|gn)(\d+)?.(weight|bias)': dict(weight_decay=0., lars_exclude=True),
+    r'bias': dict(weight_decay=0., lars_exclude=True)
+}
+optimizer = dict(
+    type='LARS',
+    lr=0.3,
+    weight_decay=0.0000015,
+    momentum=0.9,
+    paramwise_cfg=paramwise_cfg)
+# learning policy
+lr_config = dict(
+    policy='CosineAnnealing',
+    min_lr=0.,
+    warmup='linear',
+    warmup_iters=2,
+    warmup_ratio=0.0001,  # cannot be 0
+    warmup_by_epoch=True)
 total_epochs = 60

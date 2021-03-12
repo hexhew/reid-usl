@@ -30,8 +30,7 @@ train_pipeline = [
     dict(
         type='RandomCamStyle',
         camstyle_root='bounding_box_train_camstyle',
-        p=0.5),
-    dict(type='LoadImage'),
+        p=5. / 6.),
     dict(
         type='RandomResizedCrop',
         size=(256, 128),
@@ -54,7 +53,6 @@ train_pipeline = [
     dict(type='RandomErasing', value=[0.485, 0.456, 0.406])
 ]
 test_pipeline = [
-    dict(type='LoadImage'),
     dict(type='Resize', size=(256, 128), interpolation=3),
     dict(type='ToTensor'),
     dict(

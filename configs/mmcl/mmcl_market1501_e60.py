@@ -54,6 +54,7 @@ train_pipeline = [
     dict(type='RandomErasing', value=[0.485, 0.456, 0.406])
 ]
 test_pipeline = [
+    dict(type='LoadImage'),
     dict(type='Resize', size=(256, 128), interpolation=3),
     dict(type='ToTensor'),
     dict(

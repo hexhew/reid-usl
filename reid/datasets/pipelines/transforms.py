@@ -6,7 +6,7 @@ import torchvision.transforms as T
 from mmcv.utils import build_from_cfg
 from PIL import ImageFilter
 
-from ..builder import PIPELINES
+from .builder import PIPELINES
 
 _excluded_transforms = ['RandomApply']
 for m in inspect.getmembers(T, inspect.isclass):

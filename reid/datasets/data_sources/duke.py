@@ -12,3 +12,4 @@ class DukeMTMC(Market1501):
         - cameras: 8.
     """
     DATA_SOURCE = 'DukeMTMC-reID'
+    NUM_CAMERAS = 8

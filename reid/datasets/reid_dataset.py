@@ -1,8 +1,8 @@
 from mmcv.runner import get_dist_info
-from PIL import Image
 from torch.utils.data import Dataset
 
-from .builder import DATASETS, build_data_source, build_pipeline
+from .builder import DATASETS, build_data_source
+from .pipelines import build_pipeline
 
 
 @DATASETS.register_module()
@@ -28,7 +28,7 @@ class ReIDDataset(Dataset):
             self.num_gallery = len(self.data_source.gallery)
 
         if pipeline is not None:
-            self.pipeline = build_pipeline(pipeline)
+            self.pipeline = build_pipeline(pipeline, dataset=self)
         else:
             self.pipeline = None
 
@@ -37,14 +37,12 @@ class ReIDDataset(Dataset):
 
     def get_sample(self, idx):
         img, pid, camid = self.img_items[idx]
-        img = Image.open(img)
-        img = img.convert('RGB')
 
         return img, pid, camid
 
     def __getitem__(self, idx):
         img, pid, camid = self.get_sample(idx)
         label = self.pid_dict[pid] if not self.test_mode else pid
-        img = self.pipeline(img)
+        results = dict(img=img, label=label, pid=pid, camid=camid, idx=idx)
 
-        return dict(img=img, label=label, pid=pid, camid=camid, idx=idx)
+        return self.pipeline(results)

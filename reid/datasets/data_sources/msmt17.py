@@ -12,3 +12,4 @@ class MSMT17(Market1501):
         - cameras: 15.
     """
     DATA_SOURCE = 'MSMT17'
+    NUM_CAMERAS = 15

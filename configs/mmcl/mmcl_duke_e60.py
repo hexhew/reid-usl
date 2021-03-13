@@ -71,7 +71,7 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-custom_hooks = [dict(type='MMCLHook')]
+custom_hooks = [dict(type='SetEpochHook')]
 paramwise_cfg = {'backbone': dict(lr_mult=0.1)}
 optimizer = dict(
     type='SGD',

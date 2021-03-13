@@ -31,11 +31,15 @@ class MMCL(Baseline):
         self.momentum = base_momentum
         self.start_epoch = start_epoch
         self._epoch = 0
+        self._max_epochs = 0
 
         self.label_generator = build_label_generator(label_generator)
 
-    def set_epoch(self, epoch):
+    def set_epoch(self, epoch, max_epochs):
         self._epoch = epoch
+        self._max_epochs = max_epochs
+
+        self.momentum = self.base_momentum * self._epoch / self._max_epochs
 
     def forward_test(self, img, **kwargs):
         # MMCL uses pooling-5 features

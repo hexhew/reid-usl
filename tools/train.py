@@ -22,6 +22,8 @@ def parse_args():
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(
+        '--sync-bn', action='store_true', help='whether to use syncBN')
+    parser.add_argument(
         '--no-validate',
         action='store_true',
         help='whether not to evaluate the checkpoint during training')
@@ -134,6 +136,9 @@ def main():
     meta['exp_name'] = osp.basename(args.config)
 
     model = build_reid(cfg.model)
+    if args.sync_bn:
+        model = torch.nn.modules.SyncBatchNorm.convert_sync_batchnorm(model)
+        logger.info('Sync BatchNorm: Enable')
     datasets = [build_dataset(cfg.data.train)]
 
     if cfg.checkpoint_config is not None:

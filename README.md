@@ -8,6 +8,5 @@ A toolbox for unsupervised person re-ID tasks. It works with PyTorch == 1.6.0 fo
 
 Supported methods:
 
-- [x] [MMCL](configs/mmcl/README.md)
-- [x] [SpCL](configs/spcl/README.md)
-
+- [x] [MMCL (CVPR'2020)](configs/mmcl/README.md)
+- [x] [SpCL (NeurIPS'2020)](configs/spcl/README.md)

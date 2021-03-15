@@ -17,12 +17,12 @@ model = dict(
         with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
-    # head=dict(
-    #     type='SupContrastHead',
-    #     temperature=0.05,
-    #     contrast_mode='all',
-    #     with_label=True))
-    head=dict(type='SCLHead', temperature=0.05))
+    head=dict(
+        type='SupContrastHead',
+        temperature=0.05,
+        contrast_mode='all',
+        with_label=True))
+# head=dict(type='SCLHead', temperature=0.05))
 
 data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
 dataset_type = 'ContrastiveDataset'
@@ -80,38 +80,32 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-custom_hooks = [
-    dict(
-        type='LabelGenerationHook',
-        extractor=dict(
-            dataset=dict(
-                type='ReIDDataset',
-                data_source=data_source,
-                pipeline=test_pipeline),
-            samples_per_gpu=32,
-            workers_per_gpu=4),
-        label_generator=dict(
-            type='SelfPacedGenerator',
-            # eps=[0.58, 0.6, 0.62],
-            eps=[0.6],
-            min_samples=4,
-            k1=20,
-            k2=6))
-]
+# custom_hooks = [
+#     dict(
+#         type='LabelGenerationHook',
+#         extractor=dict(
+#             dataset=dict(
+#                 type='ReIDDataset',
+#                 data_source=data_source,
+#                 pipeline=test_pipeline),
+#             samples_per_gpu=32,
+#             workers_per_gpu=4),
+#         label_generator=dict(
+#             type='SelfPacedGenerator',
+#             # eps=[0.58, 0.6, 0.62],
+#             eps=[0.6],
+#             min_samples=4,
+#             k1=20,
+#             k2=6))
+# ]
 # optimizer
-paramwise_cfg = {'backbone': dict(lr_mult=0.1)}
-optimizer = dict(
-    type='SGD',
-    lr=0.1,
-    weight_decay=0.0001,
-    momentum=0.9,
-    paramwise_cfg=paramwise_cfg)
+optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
 # learning policy
 lr_config = dict(
     policy='CosineAnnealing',
     min_lr=0.,
     warmup='linear',
-    warmup_iters=2,
+    warmup_iters=5,
     warmup_ratio=0.0001,  # cannot be 0
     warmup_by_epoch=True)
-total_epochs = 60
+total_epochs = 100

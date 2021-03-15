@@ -18,22 +18,22 @@ class SCLHead(nn.Module):
 
     def forward(self, features, label, **kwargs):
         N = features.shape[0]
-        features = features.reshape(2 * N, -1)
+        features = torch.cat(torch.unbind(features, dim=1), dim=0)
         logit = torch.matmul(features, features.t())
 
         mask = 1 - torch.eye(2 * N, dtype=torch.uint8).cuda()
         logit = torch.masked_select(logit, mask == 1).reshape(2 * N, -1)
 
         label = concat_all_gather(label)
-        # label: N -> 2N
-        label = label.unsqueeze(1).expand(N, 2).reshape(-1)
-        # 2N x 1 -> 2N x 2N
-        label = label.unsqueeze(1).expand(2 * N, 2 * N)
-        is_pos = label.eq(label.t())
-        is_neg = label.ne(label.t())
+        label = label.view(-1, 1)
+        label_mask = label.eq(label.t()).float()
+        label_mask = label_mask.repeat(2, 2)
+        is_neg = 1 - label_mask
         # 2N x (2N - 1)
-        pos_mask = torch.masked_select(is_pos, mask == 1).reshape(2 * N, -1)
-        neg_mask = torch.masked_select(is_neg, mask == 1).reshape(2 * N, -1)
+        pos_mask = torch.masked_select(label_mask.bool(),
+                                       mask == 1).reshape(2 * N, -1)
+        neg_mask = torch.masked_select(is_neg.bool(),
+                                       mask == 1).reshape(2 * N, -1)
 
         n = logit.size(0)
         loss = []

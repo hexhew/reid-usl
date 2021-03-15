@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from mmcv.runner import get_dist_info
 
 from reid.utils import concat_all_gather
 from ..builder import HEADS
@@ -34,6 +35,13 @@ class SCLHead(nn.Module):
                                        mask == 1).reshape(2 * N, -1)
         neg_mask = torch.masked_select(is_neg.bool(),
                                        mask == 1).reshape(2 * N, -1)
+
+        rank, world_size = get_dist_info()
+        size = int(2 * N / world_size)
+
+        pos_mask = torch.split(pos_mask, [size] * world_size, dim=0)[rank]
+        neg_mask = torch.split(neg_mask, [size] * world_size, dim=0)[rank]
+        logit = torch.split(logit, [size] * world_size, dim=0)[rank]
 
         n = logit.size(0)
         loss = []

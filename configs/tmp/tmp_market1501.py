@@ -17,11 +17,6 @@ model = dict(
         with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
-    # head=dict(
-    #     type='SupContrastHead',
-    #     temperature=0.05,
-    #     contrast_mode='all',
-    #     with_label=True))
     head=dict(type='SCLHead', temperature=0.05))
 
 data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
@@ -30,7 +25,7 @@ train_pipeline = [
     dict(
         type='RandomCamStyle',
         camstyle_root='bounding_box_train_camstyle',
-        p=0.5),
+        p=0.2),
     dict(
         type='RandomResizedCrop',
         size=(256, 128),
@@ -72,6 +67,11 @@ test_pipeline = [
 data = dict(
     samples_per_gpu=32,
     workers_per_gpu=4,
+    sampler=dict(
+        type='FixedStepIdentitySampler',
+        num_instances=4,
+        step=100,
+        with_camid=True),
     train=dict(
         type=dataset_type, data_source=data_source, pipeline=train_pipeline),
     test=dict(
@@ -92,16 +92,23 @@ custom_hooks = [
             workers_per_gpu=4),
         label_generator=dict(
             type='SelfPacedGenerator',
-            # eps=[0.58, 0.6, 0.62],
-            eps=[0.75],
+            eps=[0.58, 0.6, 0.62],
+            # eps=[0.75],
             min_samples=4,
             k1=30,
-            k2=6),
-        start=1,
-        interval=2)
+            k2=6))
 ]
 # optimizer
-optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
+paramwise_cfg = {
+    r'(bn|gn)(\d+)?.(weight|bias)': dict(weight_decay=0., lars_exclude=True),
+    r'bias': dict(weight_decay=0., lars_exclude=True)
+}
+optimizer = dict(
+    type='LARS',
+    lr=0.2,
+    weight_decay=0.0000015,
+    momentum=0.9,
+    paramwise_cfg=paramwise_cfg)
 # learning policy
 lr_config = dict(
     policy='CosineAnnealing',

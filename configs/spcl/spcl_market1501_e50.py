@@ -76,7 +76,7 @@ custom_hooks = [
             type='SelfPacedGenerator',
             eps=[0.58, 0.6, 0.62],
             min_samples=4,
-            k1=20,
+            k1=30,
             k2=6))
 ]
 optimizer = dict(type='Adam', lr=0.00035, weight_decay=5e-4)

@@ -117,4 +117,4 @@ lr_config = dict(
     warmup_iters=5,
     warmup_ratio=0.0001,  # cannot be 0
     warmup_by_epoch=True)
-total_epochs = 100
+total_epochs = 50

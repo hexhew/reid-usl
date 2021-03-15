@@ -15,7 +15,7 @@
 
 **Unsupervised version of SpCL**
 
-### Market-1501
+- Market-1501
 
 |                  | mAP  | Rank-1 | Rank-5 | Rank-10 |
 |------------------|------|--------|--------|---------|

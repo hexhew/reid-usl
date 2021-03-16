@@ -33,18 +33,18 @@ train_pipeline = [
         ratio=(0.33, 0.5),
         interpolation=3),
     dict(type='RandomHorizontalFlip'),
-    dict(type='RandomRotation', degrees=10),
-    dict(
-        type='RandomApply',
-        transforms=[
-            dict(
-                type='ColorJitter',
-                brightness=0.4,
-                contrast=0.4,
-                saturation=0.4,
-                hue=0.1)
-        ],
-        p=0.8),
+    # dict(type='RandomRotation', degrees=10),
+    # dict(
+    #     type='RandomApply',
+    #     transforms=[
+    #         dict(
+    #             type='ColorJitter',
+    #             brightness=0.4,
+    #             contrast=0.4,
+    #             saturation=0.4,
+    #             hue=0.1)
+    #     ],
+    #     p=0.8),
     dict(
         type='RandomApply',
         transforms=[dict(type='GaussianBlur', sigma=(0.1, 2.0))],
@@ -92,8 +92,8 @@ custom_hooks = [
             workers_per_gpu=4),
         label_generator=dict(
             type='SelfPacedGenerator',
-            eps=[0.58, 0.6, 0.62],
-            # eps=[0.75],
+            # eps=[0.58, 0.6, 0.62],
+            eps=[0.75],
             min_samples=4,
             k1=30,
             k2=6))
@@ -105,7 +105,7 @@ paramwise_cfg = {
 }
 optimizer = dict(
     type='LARS',
-    lr=0.2,
+    lr=0.3,
     weight_decay=0.0000015,
     momentum=0.9,
     paramwise_cfg=paramwise_cfg)
@@ -117,4 +117,4 @@ lr_config = dict(
     warmup_iters=5,
     warmup_ratio=0.0001,  # cannot be 0
     warmup_by_epoch=True)
-total_epochs = 50
+total_epochs = 100

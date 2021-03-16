@@ -70,7 +70,7 @@ data = dict(
     sampler=dict(
         type='FixedStepIdentitySampler',
         num_instances=4,
-        step=100,
+        step=50,
         with_camid=True),
     train=dict(
         type=dataset_type, data_source=data_source, pipeline=train_pipeline),
@@ -96,7 +96,8 @@ custom_hooks = [
             eps=[0.75],
             min_samples=4,
             k1=30,
-            k2=6))
+            k2=6),
+        interval=2)
 ]
 # optimizer
 # paramwise_cfg = {

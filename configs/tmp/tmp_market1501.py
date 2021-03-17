@@ -25,7 +25,7 @@ train_pipeline = [
     dict(
         type='RandomCamStyle',
         camstyle_root='bounding_box_train_camstyle',
-        p=0.2),
+        p=0.5),
     dict(
         type='RandomResizedCrop',
         size=(256, 128),
@@ -34,17 +34,6 @@ train_pipeline = [
         interpolation=3),
     dict(type='RandomHorizontalFlip'),
     dict(type='RandomRotation', degrees=10),
-    # dict(
-    #     type='RandomApply',
-    #     transforms=[
-    #         dict(
-    #             type='ColorJitter',
-    #             brightness=0.4,
-    #             contrast=0.4,
-    #             saturation=0.4,
-    #             hue=0.1)
-    #     ],
-    #     p=0.8),
     dict(
         type='RandomApply',
         transforms=[dict(type='GaussianBlur', sigma=(0.1, 2.0))],
@@ -92,25 +81,14 @@ custom_hooks = [
             workers_per_gpu=4),
         label_generator=dict(
             type='SelfPacedGenerator',
-            # eps=[0.58, 0.6, 0.62],
             eps=[0.75],
             min_samples=4,
             k1=30,
             k2=6),
-        interval=2)
+        interval=1)
 ]
 # optimizer
-# paramwise_cfg = {
-#     r'(bn|gn)(\d+)?.(weight|bias)': dict(weight_decay=0., lars_exclude=True),
-#     r'bias': dict(weight_decay=0., lars_exclude=True)
-# }
-# optimizer = dict(
-#     type='LARS',
-#     lr=0.3,
-#     weight_decay=0.0000015,
-#     momentum=0.9,
-#     paramwise_cfg=paramwise_cfg)
-optimizer = dict(type='SGD', lr=0.1, weight_decay=5e-4, momentum=0.9)
+optimizer = dict(type='SGD', lr=0.1, weight_decay=0.0001, momentum=0.9)
 # learning policy
 lr_config = dict(
     policy='CosineAnnealing',

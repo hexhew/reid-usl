@@ -7,10 +7,10 @@ from ..builder import HEADS
 
 
 @HEADS.register_module()
-class SCLHead(nn.Module):
+class AnotherSCLHead(nn.Module):
 
     def __init__(self, temperature=0.1, size_average=True):
-        super(SCLHead, self).__init__()
+        super(AnotherSCLHead, self).__init__()
         self.criterion = nn.CrossEntropyLoss()
         self.temperature = temperature
 

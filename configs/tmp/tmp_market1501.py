@@ -17,7 +17,7 @@ model = dict(
         with_bias=False,
         with_avg_pool=True,
         avgpool=dict(type='AvgPoolNeck')),
-    head=dict(type='SCLHead', temperature=0.05))
+    head=dict(type='AnotherSCLHead', temperature=0.05))
 
 data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
 dataset_type = 'ContrastiveDataset'

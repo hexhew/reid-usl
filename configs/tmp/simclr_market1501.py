@@ -23,7 +23,7 @@ model = dict(
         contrast_mode='all',
         with_label=False))
 
-data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
+data_source = dict(type='Market1501', data_root='data/market1501')
 dataset_type = 'ContrastiveDataset'
 train_pipeline = [
     dict(

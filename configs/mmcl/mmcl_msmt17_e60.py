@@ -24,7 +24,7 @@ model = dict(
         avgpool=dict(type='AvgPoolNeck')),
     head=dict(type='MMCLHead', delta=5.0, r=0.01))
 
-data_source = dict(type='MSMT17', data_root='/data/datasets/msmt17')
+data_source = dict(type='MSMT17', data_root='data/msmt17')
 dataset_type = 'ReIDDataset'
 train_pipeline = [
     dict(

@@ -19,7 +19,7 @@ model = dict(
         avgpool=dict(type='AvgPoolNeck')),
     head=dict(type='AnotherSCLHead', temperature=0.05))
 
-data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
+data_source = dict(type='Market1501', data_root='data/market1501')
 dataset_type = 'ContrastiveDataset'
 train_pipeline = [
     dict(

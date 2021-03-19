@@ -24,7 +24,7 @@ model = dict(
         feat_dim=2048,
         memory_size=12936))
 
-data_source = dict(type='Market1501', data_root='/data/datasets/market1501')
+data_source = dict(type='Market1501', data_root='data/market1501')
 dataset_type = 'PseudoLabelDataset'
 train_pipeline = [
     dict(type='Resize', size=(256, 128), interpolation=3),

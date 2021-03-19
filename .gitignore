@@ -140,6 +140,7 @@ cython_debug/
 # project
 .dist/
 .vscode/
+data/
 reid/core/evaluation/rank_cylib/rank_cy.c
 tests/
 work_dirs/

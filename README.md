@@ -6,6 +6,12 @@ A toolbox for unsupervised person re-ID tasks. It works with PyTorch == 1.6.0 fo
 
 ## Model zoo
 
+Supported self-supervised methods:
+
+- [ ] BYOL
+- [x] SimCLR
+- [x] SimSiam
+
 Supported methods:
 
 - [x] [MMCL (CVPR'2020)](configs/mmcl/README.md)

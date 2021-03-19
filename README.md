@@ -14,8 +14,8 @@ Supported self-supervised methods:
 
 Supported methods:
 
-- [x] [MMCL (CVPR'2020)](configs/mmcl/README.md)
-- [x] [SpCL (NeurIPS'2020)](configs/spcl/README.md)
+- [x] [MMCL (CVPR'2020)](configs/mmcl)
+- [x] [SpCL (NeurIPS'2020)](configs/spcl)
 
 ## Installation
 

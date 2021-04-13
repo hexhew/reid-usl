@@ -1,10 +1,11 @@
 _base_ = '../_base_/default_runtime.py'
 
+memory_size = 32621
 model = dict(
     type='MMCL',
     pretrained='torchvision://resnet50',
     feat_dim=2048,
-    memory_size=32621,
+    memory_size=memory_size,
     base_momentum=0.5,
     start_epoch=6,
     label_generator=dict(type='MPLP', t=0.6),

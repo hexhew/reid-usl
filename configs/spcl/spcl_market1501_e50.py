@@ -1,5 +1,6 @@
 _base_ = '../_base_/default_runtime.py'
 
+memory_size = 12936
 model = dict(
     type='Baseline',
     pretrained='torchvision://resnet50',
@@ -22,7 +23,7 @@ model = dict(
         temperature=0.05,
         momentum=0.2,
         feat_dim=2048,
-        memory_size=12936))
+        memory_size=memory_size))
 
 data_source = dict(type='Market1501', data_root='data/market1501')
 dataset_type = 'PseudoLabelDataset'

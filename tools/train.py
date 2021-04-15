@@ -9,7 +9,7 @@ from mmcv.runner import get_dist_info, init_dist
 from mmcv.utils import Config, DictAction, collect_env
 
 from reid import __version__
-from reid.apis import set_random_seed, train_reid
+from reid.apis import set_random_seed, train_model
 from reid.datasets import build_dataset
 from reid.models import build_reid
 from reid.utils import get_root_logger
@@ -145,7 +145,7 @@ def main():
         # save project version in checkpoints as meta
         cfg.checkpoint_config.meta = dict(reid_version=__version__)
 
-    train_reid(
+    train_model(
         model,
         datasets,
         cfg,

@@ -22,13 +22,13 @@ def set_random_seed(seed, deterministic=False):
         torch.backends.cudnn.benchmark = False
 
 
-def train_reid(model,
-               dataset,
-               cfg,
-               distributed=False,
-               validate=False,
-               timestamp=None,
-               meta=None):
+def train_model(model,
+                dataset,
+                cfg,
+                distributed=False,
+                validate=False,
+                timestamp=None,
+                meta=None):
     logger = get_root_logger()
 
     # prepare data loaders

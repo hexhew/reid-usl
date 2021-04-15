@@ -26,6 +26,7 @@ train_pipeline = [
         type='RandomCamStyle',
         camstyle_root='bounding_box_train_camstyle',
         p=0.5),
+    dict(type='LoadImage'),
     dict(
         type='RandomResizedCrop',
         size=(256, 128),
@@ -46,6 +47,7 @@ train_pipeline = [
     dict(type='RandomErasing', value=[0.485, 0.456, 0.406])
 ]
 test_pipeline = [
+    dict(type='LoadImage'),
     dict(type='Resize', size=(256, 128), interpolation=3),
     dict(type='ToTensor'),
     dict(
@@ -80,11 +82,7 @@ custom_hooks = [
             samples_per_gpu=32,
             workers_per_gpu=4),
         label_generator=dict(
-            type='SelfPacedGenerator',
-            eps=[0.75],
-            min_samples=4,
-            k1=30,
-            k2=6),
+            type='SelfPacedGenerator', eps=[0.75], min_samples=4, k1=30, k2=6),
         interval=1)
 ]
 # optimizer

@@ -1,6 +1,3 @@
-from PIL import Image
-
-
 class Compose(object):
 
     def __init__(self, transforms):
@@ -14,9 +11,7 @@ class Compose(object):
             img = self.transforms[0](img, results['camid'])
             start_idx = 1
 
-        # load image
-        img = Image.open(img)
-        img = img.convert('RGB')
+        img = results['img']
         for t in self.transforms[start_idx:]:
             img = t(img)
         results['img'] = img
